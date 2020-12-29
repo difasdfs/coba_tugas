@@ -1,0 +1,46 @@
+TugasProyek
+- pemilik_tugas - (cascade)User
+- status - (multiple choice, ada dokumentasinya)
+- judul		(char)
+- isi		(char)
+- deadline	(char)
+- selesai_pada	(char)
+- bukti		(char)
+
+TugasRutin
+
+IsiTugasRutin - (cascade)TugasRutin
+
+----------------------------------------------------------------------------------------
+
+algoritma yang bisa perulangan waktu
+
+# berapa hari sampai hari deadline ?
+# delta = deadline - hari ini
+# delta.days
+
+from appstugas.models import NgetesTanggal
+from django.utils import timezone
+import datetime
+
+tugas = NgetesTanggal.objects.get(pk=1)
+selisih = tugas.dikerjakan_sampai - tugas.mulai
+banyak_hari = selisih.days + 1
+
+tanggal = tugas.mulai
+for i in range(banyak_hari): 
+    print(str(i+1) + '. ' + str(tanggal))
+    tanggal += datetime.timedelta(days=1)
+
+------------------------------------------------------------------------------------------
+tugas rutin -> judul
+isi tugas rutin -> 
+- (cascade)tugas rutin
+- isi
+- deadline
+- status
+- selesai pada
+
+html input :
+- Judul, isi, dikerjakan_dari, dikerjakan_sampai
+
