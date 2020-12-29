@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import TugasProyek, TugasRutin, IsiTugasRutin
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 # Create your views here.
@@ -39,6 +39,12 @@ def rutin(request):
         tgs_rutin = TugasRutin(judul=data_judul)
         tgs_rutin.save()
 
+        # INPUTNYA TANGGAL AJA, TRUS TAMBAHIN JAM (MASUK KANTOR)
+        # BERARTI HARUS TAU STRING OUTPUT DARI HTML INPUT DATE!
+
+        data_dikerjakan_dari += "T18:00"
+        data_dikerjakan_sampai += "T18:00"
+
         objek_tugas = TugasRutin.objects.get(pk=tgs_rutin.id)
         statusnya = 'On Progress'
 
@@ -48,7 +54,22 @@ def rutin(request):
         d_dikerjakan_dari_utc = d_dikerjakan_dari.astimezone(pytz.utc)
         d_dikerjakan_sampai_utc = d_dikerjakan_sampai.astimezone(pytz.utc)
 
-        print(type(d_utc))
+        selisih = d_dikerjakan_sampai - d_dikerjakan_dari
+        banyak_hari = selisih.days + 1
+
+        tanggal = d_dikerjakan_dari_utc
+
+        for i in range(banyak_hari):
+            isitgs_rutin = IsiTugasRutin(
+                tugas_rutin = objek_tugas,
+                isi = data_isi,
+                deadline = tanggal,
+                status = "On Progress",
+            )
+
+            isitgs_rutin.save()
+
+            tanggal += timedelta(days=1)
 
         return redirect('index')
 
